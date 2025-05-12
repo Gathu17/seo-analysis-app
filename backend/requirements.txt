@@ -34,7 +34,6 @@ soupsieve==2.5
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.2.1
-vboxapi==1.0
 virtualenv==20.25.1
 Werkzeug==3.0.2
 wheel==0.43.0
