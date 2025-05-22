@@ -70,44 +70,24 @@ class SEOReportView(APIView):
                 )
             
             
-            # formatted_data = {
-            #     "domain": domain,
-            #     "business_name": seo_data.get("business_name", ""),
-            #     "location": seo_data.get("location", ""),
-            #     "seo_score": seo_data.get("seo_score", 0),
-            #     "gmb_profile": seo_data.get("gmb_profile", {}),
-            #     "local_rankings": seo_data.get("local_rankings", {}),
-            #     "web"
-            #     "keywords": {
-            #         "ranking": seo_data.get("local_rankings", {}).get("position", 0),
-            #         "opportunities": [
-            #             kw.get("keyword", "") for kw in 
-            #             seo_data.get("keywords", {}).get("top_keywords", [])
-            #         ]
-            #     },
-            #     "backlinks": {
-            #         "count": seo_data.get("backlinks", {}).get("total", 0),
-            #         "quality_score": seo_data.get("backlinks", {}).get("referring_domains", 0)
-            #     },
-            #     "authority": seo_data.get("website_analysis", {}).get("onpage_score", 0)
-            # }
+          
             
             # Log the request
-            SEORequestLog.objects.create(
-                domain=website,
-                response_status=200,
-                seo_score=seo_data["seo_score"]
-            )
+            # SEORequestLog.objects.create(
+            #     domain=website,
+            #     response_status=200,
+            #     seo_score=seo_data["seo_score"]
+            # )
             
             return Response(seo_data)
             
         except Exception as e:
             # Log the error
-            SEORequestLog.objects.create(
-                domain=website,
-                response_status=500,
-                seo_score=None
-            )
+            # SEORequestLog.objects.create(
+            #     domain=website,
+            #     response_status=500,
+            #     seo_score=None
+            # )
             
             return Response(
                 {"erro": str(e)}, 
