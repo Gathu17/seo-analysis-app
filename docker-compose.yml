@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    command: gunicorn mysite.wsgi --bind 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATAFORSEO_API_KEY=${DATAFORSEO_API_KEY}
+      - DATAFORSEO_API_SECRET=${DATAFORSEO_API_SECRET}
