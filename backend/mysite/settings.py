@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'seo-analysis-app.onrender.com',
+    'p01--seo-insights--p4ccmqyddnmp.code.run',
 ]
 
 
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # 'django.contrib.staticfiles',  # Comment out or remove this line
+    # 'django.contrib.staticfiles', 
     'seo_api',
     'rest_framework',
     'corsheaders',
