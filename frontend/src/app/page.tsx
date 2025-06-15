@@ -137,7 +137,8 @@ export default function Home() {
                 score={data.backlinks.quality_score >= 80 ? 'A' : 
                        data.backlinks.quality_score >= 60 ? 'B' : 
                        data.backlinks.quality_score >= 40 ? 'C' : 
-                       data.backlinks.quality_score >= 20 ? 'D' : 'F'} 
+                       data.backlinks.quality_score >= 20 ? 'D' : 'F'}
+                isLocked={true} 
               />
               <ScoreCard 
                 number={5} 
