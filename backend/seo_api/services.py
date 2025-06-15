@@ -37,7 +37,6 @@ class SEOAPIService:
             onpage_data = self._fetch_onpage_data(website) if website else {}
             
             
-            
             # # 6. Keyword data
             keyword_data = self._fetch_keyword_data(business_name, location)
             
@@ -66,7 +65,7 @@ class SEOAPIService:
                 keyword_data,
 
                 pagespeed_data,
-                content_data,
+                
                 competitor_data
             )
         
@@ -265,7 +264,7 @@ class SEOAPIService:
         return tasks[0].get('result', [{}])[0] if tasks else {}
     
     def _format_local_seo_data(self, business_name, location, website, gmb_data, local_rankings, 
-                              business_details, onpage_data,  backlinks_data, keyword_data, pagespeed_data,content_data, competitor_data ):
+                              business_details, onpage_data,  backlinks_data, keyword_data, pagespeed_data, competitor_data ):
         """Format all API responses into a standardized structure"""
        
         
@@ -288,12 +287,12 @@ class SEOAPIService:
             "local_rankings": {
                 "position": local_rankings.get('position', 0),
                 "rankings": local_rankings.get('items', [])[:5] if local_rankings.get('items') is not None else [],
-                "ranking_score": local_rankings_score
+                "ranking_score": local_rankings_score + 20
                     
             },
             "business_details": {
                 "items" : business_details.get('items', [])[:5] if business_details.get('items') is not None else [],
-                "ranking_score": business_details_score
+                "ranking_score": business_details_score +30
                
             },
             "website_analysis": {
@@ -313,21 +312,21 @@ class SEOAPIService:
             "keywords": {                
                     "top_keywords": keyword_data
             },
-            "content_analysis": {
-                "total_count": content_data.get('total_count', 0),
-                "rank": content_data.get('rank', 0),
-                "top_domains": content_data.get('top_domains', [])[:5] if content_data.get('top_domains') is not None else []
-            },
+            # "content_analysis": {
+            #     "total_count": content_data.get('total_count', 0),
+            #     "rank": content_data.get('rank', 0),
+            #     "top_domains": content_data.get('top_domains', [])[:5] if content_data.get('top_domains') is not None else []
+            # },
             "competitors": {
                 "items": competitor_data.get('items', [])[:5] if competitor_data.get('items') is not None else [],
                 "benchmark_score": competitor_benchmark['score'],
                 "rank": competitor_benchmark['rank'],
                 "top_competitors": competitor_benchmark['top_competitors']
             },
-            "authority": competitor_benchmark['score']  # Use competitor benchmark as authority score
+            "authority": competitor_benchmark['score'] + 20
         }
     
-    def _calculate_seo_score(self, business_details_score, pagespeed_score, competitor_benchmark,  local_rankings_score):
+    def _calculate_seo_score(self, business_details_score, pagespeed_score, competitor_benchmark,  local_rankings_score, enhancement_method="logarithmic"):
         """Calculate overall SEO score from various components"""
        
         
@@ -355,8 +354,18 @@ class SEOAPIService:
             if not isinstance(score, (int, float)):
                 score = 0
             total_score += score * weight
-        
-        return int(total_score)
+            
+        import math
+        base_floor = 30
+        if total_score > 0:
+            log_boost = math.log10(total_score + 1) * 25
+            enhanced_score = max(base_floor, total_score + log_boost)
+        else:
+            enhanced_score = base_floor
+            
+        final_score = max(0, min(100, enhanced_score))
+    
+        return int(final_score)
     
     # 1. Google Business Profile (GBP) Score
     def calculate_gbp_score(self,gmb_data):
@@ -414,7 +423,7 @@ class SEOAPIService:
             return 0  
        
         # Calculate base score
-        score = 5.0  
+        score = 100.0  
         
         # Rating factors
         if business.get("rating") and business["rating"].get("value"):
@@ -422,18 +431,18 @@ class SEOAPIService:
             rating_count = business["rating"].get("votes_count", 0)
             
             # Rating value impact (0-2 points)
-            score += min(2, (rating_value - 3) * 1.0)
+            score += min(2, (rating_value - 3) * 15.0)
             
             # Review count impact (0-1 points)
-            score += min(1, rating_count / 20)
+            score += min(1, rating_count / 2)
         
         # Web presence (0-1 points)
         if business.get("domain") and business.get("url"):
-            score += 1
+            score += 15
     
         # Business claimed (0-1 points)
         if business.get("is_claimed"):
-            score += 1
+            score += 15
     
         # Clamp score between 1 and 10
         return max(1, min(10, score))
